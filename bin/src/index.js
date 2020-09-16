@@ -38,6 +38,7 @@ const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
 const commander_1 = __importDefault(require("commander"));
 const packageJson = __importStar(require("../package.json"));
+const process_1 = require("process");
 const _write = (fileTypeDir, fileType, fileName, data) => __awaiter(void 0, void 0, void 0, function* () {
     const filePath = path_1.default.join(process.cwd(), "src", fileTypeDir);
     const file = path_1.default.join(filePath, fileName + ".ts");
@@ -55,7 +56,7 @@ const _write = (fileTypeDir, fileType, fileName, data) => __awaiter(void 0, void
 });
 const _generate = (name, data, fileTypeDir, fileType, stub) => __awaiter(void 0, void 0, void 0, function* () {
     yield ejs_1.default
-        .renderFile(path_1.default.resolve(__dirname, `stubs/${stub}`), data)
+        .renderFile(path_1.default.join(__dirname, `stubs/${stub}`), data)
         .then((content) => {
         _write(fileTypeDir, fileType, name, content);
     });
@@ -70,6 +71,16 @@ commander_1.default
     .name(packageJson.name)
     .version(packageJson.version)
     .description(packageJson.version);
+commander_1.default
+    .command("init <name>")
+    .description("Creates initial typegraphql project")
+    .action((name) => {
+    if (fs_extra_1.default.existsSync(path_1.default.join(process.cwd(), name))) {
+        console.log(chalk_1.default.red("Project name already exists."));
+        process_1.exit(1);
+    }
+    fs_extra_1.default.copySync(path_1.default.join(__dirname, "..", "..", "node_modules", "tgql-make-base"), path_1.default.join(process.cwd(), name));
+});
 commander_1.default
     .command("entity <name>")
     .description("Generates an entity")

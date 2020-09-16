@@ -6,6 +6,7 @@ import fs from "fs-extra";
 import path from "path";
 import program from "commander";
 import * as packageJson from "../package.json";
+import { exit } from "process";
 
 interface data {
   resolver?: string;
@@ -43,7 +44,7 @@ const _generate = async (
   stub: string
 ) => {
   await ejs
-    .renderFile(path.resolve(__dirname, `stubs/${stub}`), data)
+    .renderFile(path.join(__dirname, `stubs/${stub}`), data)
     .then((content) => {
       _write(fileTypeDir, fileType, name, content);
     });
@@ -61,6 +62,21 @@ program
   .name(packageJson.name)
   .version(packageJson.version)
   .description(packageJson.version);
+
+program
+  .command("init <name>")
+  .description("Creates initial typegraphql project")
+  .action((name) => {
+    if (fs.existsSync(path.join(process.cwd(), name))) {
+      console.log(chalk.red("Project name already exists."));
+      exit(1);
+    }
+
+    fs.copySync(
+      path.join(__dirname, "..", "..", "node_modules", "tgql-make-base"),
+      path.join(process.cwd(), name)
+    );
+  });
 
 program
   .command("entity <name>")
