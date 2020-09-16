@@ -8,78 +8,72 @@ import program from "commander";
 import * as packageJson from "../package.json";
 
 interface data {
-    resolver?: string;
+  resolver?: string;
 
-    entity?: string;
+  entity?: string;
 }
 
 const _write = async (
-    fileTypeDir: string,
-    fileType: string,
-    fileName: string,
-    data: string
+  fileTypeDir: string,
+  fileType: string,
+  fileName: string,
+  data: string
 ) => {
-    const filePath = path.join(process.cwd(), "src", fileTypeDir);
-    const file = path.join(filePath, fileName + ".ts");
+  const filePath = path.join(process.cwd(), "src", fileTypeDir);
+  const file = path.join(filePath, fileName + ".ts");
 
-    if (fs.existsSync(filePath) == false) {
-        fs.mkdirSync(filePath);
-    }
+  if (fs.existsSync(filePath) == false) {
+    fs.mkdirSync(filePath);
+  }
 
-    if (fs.existsSync(file) == false) {
-        fs.writeFile(path.join(filePath, fileName + ".ts"), data).then(() => {
-            console.log(chalk.green(`${fileType} has been created.`));
-        });
-    } else {
-        console.log(chalk.red(`${fileName} already exists.`));
-    }
+  if (fs.existsSync(file) == false) {
+    fs.writeFile(path.join(filePath, fileName + ".ts"), data).then(() => {
+      console.log(chalk.green(`${fileType} has been created.`));
+    });
+  } else {
+    console.log(chalk.red(`${fileName} already exists.`));
+  }
 };
 
 const _generate = async (
-    name: string,
-    data: data,
-    fileTypeDir: string,
-    fileType: string,
-    stub: string
+  name: string,
+  data: data,
+  fileTypeDir: string,
+  fileType: string,
+  stub: string
 ) => {
-    await ejs
-        .renderFile(path.resolve(__dirname, `stubs/${stub}`), data)
-        .then((content) => {
-            _write(fileTypeDir, fileType, name, content);
-        });
+  await ejs
+    .renderFile(path.resolve(__dirname, `stubs/${stub}`), data)
+    .then((content) => {
+      _write(fileTypeDir, fileType, name, content);
+    });
 };
 
 const entity = async (name: string) => {
-    _generate(name, { entity: name }, "entity", "Entity", "entity.ejs");
+  _generate(name, { entity: name }, "entity", "Entity", "entity.ejs");
 };
 
 const resolver = async (name: string) => {
-    _generate(
-        name,
-        { resolver: name },
-        "resolvers",
-        "Resolver",
-        "resolver.ejs"
-    );
+  _generate(name, { resolver: name }, "resolvers", "Resolver", "resolver.ejs");
 };
 
 program
-    .name(packageJson.name)
-    .version(packageJson.version)
-    .description(packageJson.version);
+  .name(packageJson.name)
+  .version(packageJson.version)
+  .description(packageJson.version);
 
 program
-    .command("entity <name>")
-    .description("Generates an entity")
-    .action((name) => {
-        entity(name);
-    });
+  .command("entity <name>")
+  .description("Generates an entity")
+  .action((name) => {
+    entity(name);
+  });
 
 program
-    .command("resolver <name>")
-    .description("Generates a resolver")
-    .action((name) => {
-        resolver(name);
-    });
+  .command("resolver <name>")
+  .description("Generates a resolver")
+  .action((name) => {
+    resolver(name);
+  });
 
 program.parse(process.argv);
