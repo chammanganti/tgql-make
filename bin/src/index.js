@@ -80,6 +80,7 @@ commander_1.default
         process_1.exit(1);
     }
     fs_extra_1.default.copySync(path_1.default.join(__dirname, "..", "..", "node_modules", "tgql-make-base"), path_1.default.join(process.cwd(), name));
+    console.log(chalk_1.default.green(`${name} has been created. Enjoy!`));
 });
 commander_1.default
     .command("entity <name>")

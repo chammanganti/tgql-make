@@ -76,6 +76,7 @@ program
       path.join(__dirname, "..", "..", "node_modules", "tgql-make-base"),
       path.join(process.cwd(), name)
     );
+    console.log(chalk.green(`${name} has been created. Enjoy!`));
   });
 
 program
