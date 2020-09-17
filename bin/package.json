@@ -1,7 +1,13 @@
 {
     "name": "tgql-make",
     "version": "0.0.1",
-    "description": "Simple scaffolding tool for TypeGraphQL",
+    "description": "A simple typegraphql project helper.",
+    "keywords": [
+        "type",
+        "graphql",
+        "make",
+        "typescript"
+    ],
     "main": "./bin/index.js",
     "bin": {
         "tgql-make": "./bin/src/index.js"
